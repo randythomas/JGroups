@@ -21,7 +21,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
  */
 public class Test implements Receiver {
-    String          props=null;
     Properties      config;
     boolean         sender=false;
     Transport       transport=null;
@@ -152,7 +151,6 @@ public class Test implements Receiver {
 
         output(sb.toString());
 
-        props=this.config.getProperty("props");
         num_members=Integer.parseInt(this.config.getProperty("num_members"));
         num_senders=Integer.parseInt(this.config.getProperty("num_senders"));
         this.num_buddies=Integer.parseInt(this.config.getProperty("num_buddies", "0"));
@@ -811,11 +809,6 @@ public class Test implements Receiver {
                 config.put("config", config_file);
                 continue;
             }
-            if("-props".equals(args[i])) {
-                String props=args[++i];
-                config.put("props", props);
-                continue;
-            }
             if("-verbose".equals(args[i])) {
                 verbose=true;
                 continue;
@@ -917,7 +910,7 @@ public class Test implements Receiver {
     static void help() {
         System.out.println("Test [-help] ([-sender] | [-receiver]) " +
                 "[-config <config file>] [-num_threads <number of threads for sending messages>]" +
-                "[-props <stack config>] [-verbose] [-jmx] [-bind_addr <bind address>" +
+                "[-verbose] [-jmx] [-bind_addr <bind address>" +
                 "[-dump_stats] [-f <filename>] [-interval <ms between sends>] " +
                 "[-nanos <additional nanos to sleep in interval>] [-busy_sleep (cancels out -nanos)] " +
                 "[-num_buddies <number of backup buddies>, this enables buddy replication] " +

@@ -7,6 +7,7 @@ import org.jgroups.tests.perf.Transport;
 import org.jgroups.tests.perf.Configuration;
 import org.jgroups.tests.perf.IPerf;
 import org.jgroups.Global;
+import org.jgroups.util.Util;
 
 import java.io.IOException;
 import java.net.*;
@@ -49,10 +50,24 @@ public class UdpTransport implements Transport {
 
     public void create(Properties properties) throws Exception {
         this.config=properties;
-        String mcast_addr_str=System.getProperty("udp.mcast_addr", config.getProperty("mcast_addr"));
+        String mcast_addr_str=System.getProperty("udp.mcast_addr", Util.replaceProperties(config.getProperty("mcast_addr"), config));
         if(mcast_addr_str == null)
             mcast_addr_str="239.3.4.5";
         mcast_addr=InetAddress.getByName(mcast_addr_str);
+        
+        String mcast_port_str=System.getProperty("udp.mcast_port", Util.replaceProperties(config.getProperty("mcast_port"), config));
+        if(mcast_port_str != null)
+        {
+        	try
+        	{
+        		mcast_port = new Integer(mcast_port_str).intValue();
+        	}
+        	catch (NumberFormatException nfe)
+        	{
+        		System.out.println("-- Format Exception on mcast_port parameter: " + nfe);
+        		System.out.println("-- Using the default mcast_port value: " + mcast_port);
+        	}
+        }
 
         String bind_addr_str=System.getProperty("udp.bind_addr", config.getProperty("bind_addr"));
         if(bind_addr_str != null) {

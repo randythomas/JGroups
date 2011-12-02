@@ -5,6 +5,10 @@ import org.jgroups.logging.Log;
 import org.jgroups.logging.LogFactory;
 import org.jgroups.util.Util;
 
+import org.jgroups.conf.ProtocolStackConfigurator;
+import org.jgroups.conf.ConfiguratorFactory;
+import org.jgroups.conf.ProtocolConfiguration;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -197,6 +201,15 @@ public class Test implements Receiver {
         if(tmp3 != null)
             this.processing_delay=Long.parseLong(tmp3);
 
+        Map<String,String> stackprops=null;
+        ProtocolStackConfigurator psc = ConfiguratorFactory.getStackConfigurator(props);
+        List<ProtocolConfiguration> psList = psc.getProtocolStack();
+        if (psList.size() > 0)
+        {
+        	stackprops = psList.get(0).getProperties();
+        	this.config.putAll(stackprops);
+        }
+        
         String transport_name=this.config.getProperty("transport");
         transport=(Transport)Util.loadClass(transport_name, this.getClass()).newInstance();
         transport.create(this.config);
